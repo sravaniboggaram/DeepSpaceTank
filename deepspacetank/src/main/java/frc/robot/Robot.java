@@ -87,6 +87,68 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void teleopPeriodic() {
+    boolean isLeftBumperPressed = xbox.getBumper(Hand.kLeft);
+    //double leftTreadMovemnet = xbox.getStickButton(Hand.kLeft);
+    //double rightTreadMovemnet = xbox.getStickButton(Hand.kRight);
+
+    if (isLeftBumperPressed){
+      //DigitalInput sensor = new DigitalInput(1); //change port number if needed
+      //boolean onDockLine = sensor.get();
+      //if (isDockingMode == false && onDockLine == true)
+      if (isDockingMode == false)
+      {
+        isDockingMode = true;
+      }
+        
+      
+        this.sonarLeft = m_ultrasonic1.getValue()*this.kValueToInches;
+        SmartDashboard.putNumber("distance right", sonarLeft);
+        
+        this.sonarRight = m_ultrasonic2.getValue()*this.kValueToInches;
+        SmartDashboard.putNumber("distance left", sonarRight);
+      
+
+      if (sonarLeft <= 1 || sonarRight <=1)
+      {
+        isDockingMode = false;
+      }
+
+      if (isDockingMode == true)
+      {
+        chassis.arcadeDrive(0, 0);
+      }
+     // if (onDockLine)
+      //{
+        if(Math.abs(sonarLeft - sonarRight) < isOnCenterThresholdInches)
+        {
+          chassis.arcadeDrive(.2, 0);
+        }
+        else if (sonarLeft > sonarRight)
+        {
+          chassis.arcadeDrive(.2, 15);
+          chassis.arcadeDrive(.2, 0);
+        }
+        else if (sonarLeft<sonarRight)
+        {
+          chassis.arcadeDrive(.2, -15);
+          chassis.arcadeDrive(.2, 0);
+        }
+     // }
+      /*else {
+        if (sonarLeft > sonarRight)
+        {
+          chassis.arcadeDrive(.2, 15);
+        }
+        else if (sonarLeft < sonarRight)
+        {
+          chassis.arcadeDrive(.2, -15);
+        }
+      }*/
+
+    }
+    else {
+      isDockingMode = false;
+    }
   }
 
   /**
